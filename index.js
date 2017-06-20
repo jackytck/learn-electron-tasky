@@ -24,10 +24,22 @@ app.on('ready', () => {
   const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
   tray = new Tray(iconPath)
   tray.on('click', (event, bounds) => {
-    console.log(bounds.x, bounds.y)
+    // Click event bounds
+    const { x, y } = bounds
+
+    // Window width and height
+    const { width, height } = mainWindow.getBounds()
+
     if (mainWindow.isVisible()) {
       mainWindow.hide()
     } else {
+      const yPosition = process.platform === 'darwin' ? y : y - height
+      mainWindow.setBounds({
+        x: x - width / 2,
+        y: yPosition,
+        width,
+        height
+      })
       mainWindow.show()
     }
   })
