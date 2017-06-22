@@ -1,5 +1,6 @@
 const path = require('path')
 const electron = require('electron')
+const TimerTray = require('./app/timer_tray')
 
 const {
   app,
@@ -8,7 +9,6 @@ const {
 } = electron
 
 let mainWindow
-let tray
 
 app.on('ready', () => {
   mainWindow = new BrowserWindow({
@@ -22,25 +22,5 @@ app.on('ready', () => {
 
   const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'iconTemplate.png'
   const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
-  tray = new Tray(iconPath)
-  tray.on('click', (event, bounds) => {
-    // Click event bounds
-    const { x, y } = bounds
-
-    // Window width and height
-    const { width, height } = mainWindow.getBounds()
-
-    if (mainWindow.isVisible()) {
-      mainWindow.hide()
-    } else {
-      const yPosition = process.platform === 'darwin' ? y : y - height
-      mainWindow.setBounds({
-        x: x - width / 2,
-        y: yPosition,
-        width,
-        height
-      })
-      mainWindow.show()
-    }
-  })
+  new TimerTray(iconPath, mainWindow)
 })
