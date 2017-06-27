@@ -4,7 +4,8 @@ const TimerTray = require('./app/timer_tray')
 const MainWindow = require('./app/main_window')
 
 const {
-  app
+  app,
+  ipcMain
 } = electron
 
 let mainWindow
@@ -19,4 +20,8 @@ app.on('ready', () => {
 
   // prevent GC
   tray = new TimerTray(iconPath, mainWindow)
+})
+
+ipcMain.on('update-timer', (event, timeLeft) => {
+  tray.setTitle(timeLeft)
 })
